@@ -74,6 +74,9 @@ class V2:
 
   __rmul__ = __mul__
 
+  def mult(self, other):
+    return V2(self.x * other.x, self.y * other.y)
+
   def __truediv__(self, other):
     return self * (1 / other)
 
@@ -106,6 +109,18 @@ class V2:
   def inormalize(self):
     self /= self.length()
     return self
+
+  def __pos__(self):
+    return V2(self.x, self.y)
+
+  def rotx2y(self):
+    return V2(-self.y, self.x)
+
+  def __neg__(self):
+    return V2(-self.x, -self.y)
+
+  def roty2x(self):
+    return V2(self.y, -self.x)
 
   def __pow__(self, n):
     return (self.x ** 2 + self.y ** 2) ** (n / 2)

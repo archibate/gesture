@@ -5,8 +5,8 @@ from OpenGL.GLUT import *
 
 w = gs.World()
 # pos_x pos_y | vel_x vel_y | angle ang_vel | inv_mass inv_rotin | radius
-w.add(gs.Ball, '+0.0 +0.0\n+0.0 +0.0\n+1.2 +0.7\n1.0 8.0\n0.1\n')
-w.add(gs.Ball, '-0.5 +0.0\n+0.1 +0.0\n+2.8 -0.2\n0.5 4.0\n0.05\n')
+w.add(gs.Ball, '+0.0 +0.0\n+0.0 +0.0\n+0.0 +0.0\n1.0 0.0\n0.1\n')
+w.add(gs.Ball, '-0.6 +0.0\n+0.3 +0.0\n+0.0 +0.0\n4.0 0.0\n0.05\n')
 
 glutInit()
 glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA)
