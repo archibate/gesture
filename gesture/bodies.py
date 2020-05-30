@@ -30,10 +30,17 @@ class Ball(Body):
           (self.phys.rigid.linear.vel - other.phys.rigid.linear.vel).dot(
               self.phys.rigid.linear.pos - other.phys.rigid.linear.pos) < 0:
 
+        energy = self.phys.rigid.linear.vel ** 2 / self.phys.inertia.linear + \
+                 other.phys.rigid.linear.vel ** 2 / other.phys.inertia.linear
+        print('before', energy)
+
+        disp = self.phys.rigid.linear.pos - other.phys.rigid.linear.pos
+        disp.inormalize()
+
         m1 = 1 / self.phys.inertia.linear
         m2 = 1 / other.phys.inertia.linear
-        vel1 = self.phys.rigid.linear.vel.x
-        vel2 = other.phys.rigid.linear.vel.x
+        vel1 = self.phys.rigid.linear.vel.dot(disp)
+        vel2 = other.phys.rigid.linear.vel.dot(disp)
 
         # TODO: implement M22 for k = vel * sm
         sm = V2(sqrt(m1), sqrt(m2))
@@ -43,20 +50,20 @@ class Ball(Body):
         momentum = kero.mult(sm)
         mass = m1 + m2
 
-
         norm = (sm / sqrt(mass)).roty2x()
 
-        print('norm =', norm)
-        print('energy before =', kero ** 2)
-        print('kero before =', kero)
-        kero = kero - 2 * kero.dot(norm) * norm
-        print('kero after =', kero)
-        print('energy after =', kero ** 2)
+        kero = kero.reflect(norm)
 
         vel1, vel2 = kero.x / sm.x, kero.y / sm.y
 
-        self.phys.rigid.linear.vel.x = vel1
-        other.phys.rigid.linear.vel.x = vel2
+        self.phys.rigid.linear.vel.ireflect(disp, 1)
+        other.phys.rigid.linear.vel.ireflect(disp, 1)
+        self.phys.rigid.linear.vel += vel1 * disp
+        other.phys.rigid.linear.vel += vel2 * disp
+
+        energy = self.phys.rigid.linear.vel ** 2 / self.phys.inertia.linear + \
+                 other.phys.rigid.linear.vel ** 2 / other.phys.inertia.linear
+        print('after', energy)
 
     return Body.move(self, dt, world)
 

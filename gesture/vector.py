@@ -17,6 +17,11 @@ class V2:
   def to_tuple(self):
     return (self.x, self.y)
 
+  def assign(self, other):
+    self.x = other.x
+    self.y = other.y
+    return self
+
   @staticmethod
   def from_tuple(tuple):
     x, y = tuple
@@ -68,8 +73,8 @@ class V2:
     return V2(self.x * other, self.y * other)
 
   def __imul__(self, other):
-    self.x *= other.x
-    self.y *= other.y
+    self.x *= other
+    self.y *= other
     return self
 
   __rmul__ = __mul__
@@ -77,19 +82,28 @@ class V2:
   def mult(self, other):
     return V2(self.x * other.x, self.y * other.y)
 
+  def imult(self, other):
+    self.x *= other.x
+    self.y *= other.y
+    return self
+
   def __truediv__(self, other):
     return self * (1 / other)
 
   def __itruediv__(self, other):
-    self.x /= other.x
-    self.y /= other.y
+    factor = 1 / other
+    self.x *= factor
+    self.y *= factor
+
+  def rcp(self):
+    return V2(1 / self.x, 1 / self.y)
 
   def __floordiv__(self, other):
     return V2(self.x // other, self.y // other)
 
   def __ifloordiv__(self, other):
-    self.x //= other.x
-    self.y //= other.y
+    self.x //= other
+    self.y //= other
     return self
 
   def dot(self, other):
@@ -97,6 +111,18 @@ class V2:
 
   def cross(self, other):
     return self.x * other.y - self.y * other.x
+
+  def project(self, direction):
+    return self.dot(direction) * direction
+
+  def iproject(self, direction):
+    return self.assign(self.project(direction))
+
+  def reflect(self, direction, scale=2):
+    return self - scale * self.project(direction)
+
+  def ireflect(self, direction, scale=2):
+    return self.assign(self.reflect(direction, scale))
 
   def length(self):
     return math.sqrt(self.x ** 2 + self.y ** 2)
@@ -187,13 +213,15 @@ class LA:
 
   def mult(self, other):
     return LA(self.linear * other.linear, self.angular * other.angular)
-
   def __truediv__(self, other):
     return self * (1 / other)
 
   def __itruediv__(self, other):
     self.linear /= other.linear
     self.angular /= other.angular
+
+  def rcp(self):
+    return V2(1 / self.linear, 1 / self.angular)
 
   def __floordiv__(self, other):
     return LA(self.linear // other, self.angular // other)
