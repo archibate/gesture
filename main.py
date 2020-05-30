@@ -26,7 +26,7 @@ def timer(interval):
   glutPostRedisplay()
 
 def keyboard(key, x, y):
-  if key in b' \x1b':
+  if key == b'\x1b':
     exit()
 
 glutDisplayFunc(display)
